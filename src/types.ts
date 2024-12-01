@@ -19,3 +19,11 @@ export interface SearchResult {
   courses: Course[];
   sections: Section[];
 }
+
+export interface Message {
+  id: string;
+  text: string;
+  timestamp: number;
+  username: string;
+  isAdmin: boolean;
+}
