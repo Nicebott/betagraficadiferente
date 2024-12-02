@@ -118,8 +118,8 @@ const CourseTable: React.FC<CourseTableProps> = ({ courses, sections, onRateSect
   };
 
   return (
-    <AnimatePresence>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full mt-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full mt-8">
+      <AnimatePresence mode="popLayout">
         {sections.map((section, index) => {
           const course = courses.find(c => c.id === section.courseId);
           if (!course) return null;
@@ -128,7 +128,7 @@ const CourseTable: React.FC<CourseTableProps> = ({ courses, sections, onRateSect
 
           return (
             <motion.div
-              key={section.id}
+              key={`${section.id}-${section.nrc}-${section.professor}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
@@ -183,7 +183,7 @@ const CourseTable: React.FC<CourseTableProps> = ({ courses, sections, onRateSect
                           </span>
                           {rating && (
                             <Badge
-                              variant={rating.rating >= 4 ? 'success' : rating.rating >= 3 ? 'warning' : 'error'}
+                              variant={rating.rating >= 8 ? 'success' : rating.rating >= 6 ? 'warning' : 'error'}
                               size="sm"
                               className="ml-2"
                             >
@@ -220,10 +220,11 @@ const CourseTable: React.FC<CourseTableProps> = ({ courses, sections, onRateSect
             </motion.div>
           );
         })}
-      </div>
+      </AnimatePresence>
 
       {selectedProfessor && !showReviewModal && (
         <ProfessorDetailsModal
+          key={`details-${selectedProfessor.id}`}
           isOpen={!!selectedProfessor}
           onClose={() => setSelectedProfessor(null)}
           darkMode={darkMode}
@@ -234,6 +235,7 @@ const CourseTable: React.FC<CourseTableProps> = ({ courses, sections, onRateSect
 
       {showReviewModal && selectedProfessor && auth.currentUser && (
         <ReviewModal
+          key={`review-${selectedProfessor.id}`}
           isOpen={showReviewModal}
           onClose={() => {
             setShowReviewModal(false);
@@ -245,7 +247,7 @@ const CourseTable: React.FC<CourseTableProps> = ({ courses, sections, onRateSect
           userId={auth.currentUser.uid}
         />
       )}
-    </AnimatePresence>
+    </div>
   );
 };
 

@@ -22,11 +22,11 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
   professorName,
   userId
 }) => {
-  const [rating, setRating] = useState(5);
-  const [clarity, setClarity] = useState(5);
-  const [fairness, setFairness] = useState(5);
-  const [punctuality, setPunctuality] = useState(5);
-  const [wouldTakeAgain, setWouldTakeAgain] = useState(5);
+  const [rating, setRating] = useState(8);
+  const [clarity, setClarity] = useState(8);
+  const [fairness, setFairness] = useState(8);
+  const [punctuality, setPunctuality] = useState(8);
+  const [wouldTakeAgain, setWouldTakeAgain] = useState(8);
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -74,9 +74,9 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
             : 'bg-white border-gray-300 text-gray-900'
         } focus:ring-blue-500 focus:border-blue-500`}
       >
-        {[5, 4, 3, 2, 1].map((value) => (
+        {[10, 9, 8, 7, 6, 5, 4, 3, 2, 1].map((value) => (
           <option key={value} value={value}>
-            {value} {value === 1 ? 'estrella' : 'estrellas'}
+            {value} {value === 1 ? 'punto' : 'puntos'}
           </option>
         ))}
       </select>
