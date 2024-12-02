@@ -38,7 +38,8 @@ const Chat: React.FC<ChatProps> = ({ darkMode = false }) => {
     loading,
     unreadCount,
     sendMessage,
-    loadMoreMessages
+    loadMoreMessages,
+    deleteMessage
   } = useFirebaseChat(isChatOpen);
 
   const handleLogin = async (username: string, password: string) => {
@@ -63,6 +64,15 @@ const Chat: React.FC<ChatProps> = ({ darkMode = false }) => {
     const success = await sendMessage(text, username, isAdmin);
     if (!success) {
       alert('Error al enviar el mensaje. Por favor, intenta de nuevo.');
+    }
+  };
+
+  const handleDeleteMessage = async (messageId: string) => {
+    if (isAdmin) {
+      const success = await deleteMessage(messageId);
+      if (!success) {
+        alert('Error al eliminar el mensaje. Por favor, intenta de nuevo.');
+      }
     }
   };
 
@@ -107,6 +117,8 @@ const Chat: React.FC<ChatProps> = ({ darkMode = false }) => {
                   currentUsername={username}
                   onLoadMore={loadMoreMessages}
                   loading={loading}
+                  isAdmin={isAdmin}
+                  onDeleteMessage={handleDeleteMessage}
                 />
                 <ChatInput
                   onSendMessage={handleSendMessage}

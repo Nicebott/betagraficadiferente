@@ -10,6 +10,8 @@ interface ChatMessagesProps {
   currentUsername: string;
   onLoadMore: () => void;
   loading: boolean;
+  isAdmin: boolean;
+  onDeleteMessage: (messageId: string) => void;
 }
 
 const ChatMessages: React.FC<ChatMessagesProps> = ({
@@ -17,7 +19,9 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
   darkMode,
   currentUsername,
   onLoadMore,
-  loading
+  loading,
+  isAdmin,
+  onDeleteMessage
 }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -33,7 +37,6 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
     scrollToBottom();
   }, [messages, autoScroll]);
 
-  // Detectar cuando el usuario se desplaza manualmente
   const handleScroll = () => {
     if (containerRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
@@ -61,6 +64,8 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
             message={message}
             darkMode={darkMode}
             isCurrentUser={message.username === currentUsername}
+            isAdmin={isAdmin}
+            onDelete={onDeleteMessage}
           />
         ))}
       </AnimatePresence>

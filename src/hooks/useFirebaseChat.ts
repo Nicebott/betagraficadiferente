@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { ref, query, orderByChild, limitToLast, onValue, push, DatabaseReference } from 'firebase/database';
+import { ref, query, orderByChild, limitToLast, onValue, push, remove, DatabaseReference } from 'firebase/database';
 import { db } from '../firebase';
 import { Message } from '../types';
 
@@ -11,7 +11,6 @@ export function useFirebaseChat(isOpen: boolean) {
   const [unreadCount, setUnreadCount] = useState(0);
   const [lastMessageTimestamp, setLastMessageTimestamp] = useState<number | null>(null);
 
-  // Cargar mensajes con paginación
   useEffect(() => {
     if (isOpen) {
       setLoading(true);
@@ -40,13 +39,12 @@ export function useFirebaseChat(isOpen: boolean) {
 
       return () => unsubscribe();
     } else {
-      // Contar mensajes no leídos cuando el chat está cerrado
       const chatRef = ref(db, 'chat');
       const unsubscribe = onValue(chatRef, (snapshot) => {
         const data = snapshot.val();
         if (data) {
           const newMessages = Object.values(data).filter((msg: any) => 
-            msg.timestamp > Date.now() - 300000 // últimos 5 minutos
+            msg.timestamp > Date.now() - 300000
           ).length;
           setUnreadCount(newMessages);
         }
@@ -56,7 +54,6 @@ export function useFirebaseChat(isOpen: boolean) {
     }
   }, [isOpen]);
 
-  // Función para enviar mensajes
   const sendMessage = useCallback(async (text: string, username: string, isAdmin: boolean) => {
     try {
       const chatRef = ref(db, 'chat');
@@ -73,7 +70,17 @@ export function useFirebaseChat(isOpen: boolean) {
     }
   }, []);
 
-  // Función para cargar más mensajes antiguos
+  const deleteMessage = useCallback(async (messageId: string) => {
+    try {
+      const messageRef = ref(db, `chat/${messageId}`);
+      await remove(messageRef);
+      return true;
+    } catch (error) {
+      console.error('Error deleting message:', error);
+      return false;
+    }
+  }, []);
+
   const loadMoreMessages = useCallback(async () => {
     if (!lastMessageTimestamp) return;
 
@@ -114,6 +121,7 @@ export function useFirebaseChat(isOpen: boolean) {
     loading,
     unreadCount,
     sendMessage,
+    deleteMessage,
     loadMoreMessages
   };
 }
