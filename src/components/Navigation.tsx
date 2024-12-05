@@ -1,5 +1,5 @@
 import React from 'react';
-import { GraduationCap, Menu, X, Moon, Sun, LogIn, UserCircle, HelpCircle, MessageSquare } from 'lucide-react';
+import { GraduationCap, Menu, X, Moon, Sun, LogIn, UserCircle, HelpCircle } from 'lucide-react';
 import ProfileDropdown from './ProfileDropdown';
 import { User } from 'firebase/auth';
 
@@ -17,8 +17,6 @@ interface NavigationProps {
   scrollToTop: () => void;
   handleFAQClick: () => void;
   showFAQ: boolean;
-  showForum: boolean;
-  handleForumClick: () => void;
 }
 
 const Navigation: React.FC<NavigationProps> = ({
@@ -35,8 +33,6 @@ const Navigation: React.FC<NavigationProps> = ({
   scrollToTop,
   handleFAQClick,
   showFAQ,
-  showForum,
-  handleForumClick,
 }) => {
   return (
     <header className={`${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-md sticky top-0 z-50`}>
@@ -124,7 +120,7 @@ const Navigation: React.FC<NavigationProps> = ({
           <div className="flex flex-col md:flex-row md:items-center gap-1 p-2 md:p-0">
             <NavButton
               onClick={scrollToTop}
-              isActive={!selectedModality && !showFAQ && !showForum}
+              isActive={!selectedModality && !showFAQ}
               darkMode={darkMode}
             >
               Inicio
@@ -142,14 +138,6 @@ const Navigation: React.FC<NavigationProps> = ({
               darkMode={darkMode}
             >
               SemiPresencial
-            </NavButton>
-            <NavButton
-              onClick={handleForumClick}
-              isActive={showForum}
-              darkMode={darkMode}
-            >
-              <MessageSquare size={16} className="mr-1.5" />
-              Foro
             </NavButton>
             <NavButton
               onClick={handleFAQClick}
