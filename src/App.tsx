@@ -7,6 +7,7 @@ import LoadingSpinner from './components/LoadingSpinner';
 import AuthModal from './components/AuthModal';
 import Navigation from './components/Navigation';
 import FAQ from './components/FAQ';
+import Forum from './components/Forum/Forum';
 import { Course, Section } from './types';
 import { fetchCourseData } from './api/courseData';
 import { removeDiacritics } from './utils/stringUtils';
@@ -45,6 +46,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedModality, setSelectedModality] = useState<string>('');
   const [showFAQ, setShowFAQ] = useState(false);
+  const [showForum, setShowForum] = useState(false);
   const [darkMode, setDarkMode] = useState(() => {
     const savedMode = localStorage.getItem('darkMode');
     return savedMode ? JSON.parse(savedMode) : false;
@@ -90,6 +92,7 @@ function App() {
     setSelectedCampus(campus);
     setCurrentPage(1);
     setShowFAQ(false);
+    setShowForum(false);
   }, []);
 
   const filteredSections = useMemo(() => {
@@ -103,7 +106,7 @@ function App() {
         removeDiacritics(section.nrc.toLowerCase()).includes(normalizedQuery) ||
         (course && (
           removeDiacritics(course.name.toLowerCase()).includes(normalizedQuery) ||
-          removeDiacritics(course.code.toLowerCase()).includes(normalizedQuery)
+          removeDiacritics(course. code.toLowerCase()).includes(normalizedQuery)
         ));
 
       const matchesCampus = !selectedCampus || section.campus === selectedCampus;
@@ -153,6 +156,7 @@ function App() {
     setCurrentPage(1);
     setIsMenuOpen(false);
     setShowFAQ(false);
+    setShowForum(false);
   };
 
   const scrollToTop = useCallback(() => {
@@ -163,10 +167,19 @@ function App() {
     setSelectedModality('');
     setCurrentPage(1);
     setShowFAQ(false);
+    setShowForum(false);
   }, []);
 
   const handleFAQClick = () => {
     setShowFAQ(true);
+    setShowForum(false);
+    setIsMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleForumClick = () => {
+    setShowForum(true);
+    setShowFAQ(false);
     setIsMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -189,11 +202,13 @@ function App() {
         scrollToTop={scrollToTop}
         handleFAQClick={handleFAQClick}
         showFAQ={showFAQ}
+        showForum={showForum}
+        handleForumClick={handleForumClick}
       />
       
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex flex-col items-center">
-          {!showFAQ && (
+          {!showFAQ && !showForum && (
             <SearchBar 
               onSearch={handleSearch} 
               campuses={ALL_CAMPUSES} 
@@ -204,6 +219,8 @@ function App() {
           
           {showFAQ ? (
             <FAQ darkMode={darkMode} />
+          ) : showForum ? (
+            <Forum darkMode={darkMode} setIsAuthModalOpen={setIsAuthModalOpen} />
           ) : isLoading ? (
             <LoadingSpinner darkMode={darkMode} />
           ) : currentSections.length > 0 ? (
